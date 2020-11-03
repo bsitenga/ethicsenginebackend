@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors')
 const mongoose = require('mongoose');
 const app = express();
+let Preferences = require('./models/preferences');
 
 require('dotenv').config();
 
@@ -19,6 +20,23 @@ connection.once('open', () => {
 //test endpoint for heroku
 app.get('/', function (req, res) {
     res.send("Hello Heroku");
+})
+
+app.post('/preferences', function (req, res) {
+    const util = req.body.util;
+    const action = req.body.action;
+    const known = req.body.known;
+    const pedestrians = req.body.pedestrians;
+    const newPreferences = new Preferences({
+        util,
+        action,
+        known,
+        pedestrians
+    })
+
+    newPreferences.save()
+        .then(() => res.json('Preferences added!'))
+        .catch(err => res.status(400).json('Error: ' + err));
 })
 
 // Catchall for any request that doesn't
