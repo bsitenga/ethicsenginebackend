@@ -23,6 +23,13 @@ app.get('/', function (req, res) {
     res.send("Hello Heroku");
 })
 
+//Get all summary data
+app.get('/summary', function(req, res) {
+    Summary.find()
+    .then(summaries => res.json(summaries))
+    .catch(err => res.status(400).json("Error: " + err))
+})
+
 //Adds one user's preferences to the db
 app.post('/preferences', function (req, res) {
     const util = req.body.util;
