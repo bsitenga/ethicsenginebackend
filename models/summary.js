@@ -2,7 +2,16 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const preferencesSchema = new Schema({
+const summarySchema = new Schema({
+    name: {
+        type: String,
+        required: true,
+        default: 'summary'
+    },
+    total: {
+        type: Number,
+        required: true
+    },
     util: {
         type: Number,
         required: true
@@ -21,6 +30,6 @@ const preferencesSchema = new Schema({
     }
 });
 
-const Preferences = mongoose.model('Preferences', preferencesSchema);
+const Summary = mongoose.model('Summary', summarySchema);
 
-module.exports = Preferences;
+module.exports = Summary;
