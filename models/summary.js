@@ -12,7 +12,11 @@ const summarySchema = new Schema({
         type: Number,
         required: true
     },
-    util: {
+    more: {
+        type: Number,
+        required: true
+    },
+    less: {
         type: Number,
         required: true
     },
@@ -20,14 +24,26 @@ const summarySchema = new Schema({
         type: Number,
         required: true
     },
+    inaction: {
+        type: Number,
+        required: true
+    },
     known: {
+        type: Number,
+        required: true
+    },
+    unknown: {
         type: Number,
         required: true
     },
     pedestrians: {
         type: Number,
         required: true
-    }
+    },
+    passengers: {
+        type: Number,
+        required: true
+    },
 });
 
 const Summary = mongoose.model('Summary', summarySchema);

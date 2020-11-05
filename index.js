@@ -24,23 +24,31 @@ app.get('/', function (req, res) {
 })
 
 //Get all summary data
-app.get('/summary', function(req, res) {
+app.get('/summary', function (req, res) {
     Summary.find()
-    .then(summaries => res.json(summaries))
-    .catch(err => res.status(400).json("Error: " + err))
+        .then(summaries => res.json(summaries))
+        .catch(err => res.status(400).json("Error: " + err))
 })
 
 //Adds one user's preferences to the db
 app.post('/preferences', function (req, res) {
-    const util = req.body.util;
-    const action = req.body.action;
+    const more = req.body.more;
+    const less = req.body.less;
     const known = req.body.known;
+    const unknown = req.body.unknown;
+    const action = req.body.action;
+    const inaction = req.body.inaction;
     const pedestrians = req.body.pedestrians;
+    const passengers = req.body.passengers;
     const newPreferences = new Preferences({
-        util,
+        more,
+        less,
         action,
+        inaction,
         known,
-        pedestrians
+        unknown,
+        pedestrians,
+        passengers
     })
 
     newPreferences.save()
@@ -50,10 +58,14 @@ app.post('/preferences', function (req, res) {
 
 //Updates the average of user preferences
 app.post('/summary', function (req, res) {
-    const util = req.body.util;
-    const action = req.body.action;
+    const more = req.body.more;
+    const less = req.body.less;
     const known = req.body.known;
+    const unknown = req.body.unknown;
+    const action = req.body.action;
+    const inaction = req.body.inaction;
     const pedestrians = req.body.pedestrians;
+    const passengers = req.body.passengers;
 
     //Finds the current Summary averages
     const query = Summary.where({ name: 'summary' });
@@ -62,18 +74,26 @@ app.post('/summary', function (req, res) {
         if (allPrefs) {
             //Recalculates user preference averages
             let pTotal = allPrefs.total + 1;
-            let pUtil = (Number(allPrefs.util) * Number(allPrefs.total) + Number(util)) / pTotal;
+            let pMore = (Number(allPrefs.more) * Number(allPrefs.total) + Number(more)) / pTotal;
+            let pLess = (Number(allPrefs.less) * Number(allPrefs.total) + Number(less)) / pTotal;
             let pAction = (Number(allPrefs.action) * Number(allPrefs.total) + Number(action)) / pTotal;
+            let pInaction = (Number(allPrefs.inaction) * Number(allPrefs.total) + Number(inaction)) / pTotal;
             let pKnown = (Number(allPrefs.known) * Number(allPrefs.total) + Number(known)) / pTotal;
+            let pUnknown = (Number(allPrefs.unknown) * Number(allPrefs.total) + Number(unknown)) / pTotal;
             let pPedestrians = (Number(allPrefs.pedestrians) * Number(allPrefs.total) + Number(pedestrians)) / pTotal;
+            let pPassengers = (Number(allPrefs.passengers) * Number(allPrefs.total) + Number(passengers)) / pTotal;
 
             //Updates the current summary averages
             Summary.findOneAndUpdate({ name: "summary" }, {
                 total: pTotal,
-                util: pUtil,
+                more: pMore,
+                less: pLess,
                 action: pAction,
+                inaction: pInaction,
                 known: pKnown,
-                pedestrians: pPedestrians
+                unknown: pUnknown,
+                pedestrians: pPedestrians,
+                passengers: pPassengers
             }, function () {
                 return res.json('Summary updated!')
             })
